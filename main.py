@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+# path operations are evaluated in the order they are defined
+# consider your routes and path parameters
 
 @app.get("/")
 async def root():
