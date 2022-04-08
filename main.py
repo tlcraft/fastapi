@@ -23,6 +23,10 @@ class Item(BaseModel):
 async def create_item(payload: Item):
     return payload
 
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item):
+    return {"item_id": item_id, **item.dict()}
+
 @app.get("/item/{item_id}")
 async def read_item(item_id: int, include_name: bool, include_create_date: bool = True, include_location: Optional[bool] = None):
     return {
