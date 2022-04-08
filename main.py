@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -28,12 +28,19 @@ async def update_item(item_id: int, item: Item):
     return {"item_id": item_id, **item.dict()}
 
 @app.get("/item/{item_id}")
-async def read_item(item_id: int, include_name: bool, include_create_date: bool = True, include_location: Optional[bool] = None):
+async def read_item(
+    item_id: int, 
+    include_name: bool, 
+    include_create_date: bool = True, 
+    include_location: Optional[bool] = None, 
+    query: str = Query(None, min_length=3, max_length=8)
+):
     return {
         "item_id": item_id,
         "include_name": include_name,
         "include_create_date": include_create_date,
-        "include_location": include_location    
+        "include_location": include_location,
+        "query": query  
     }
 
 class ModelName(str, Enum):
