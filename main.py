@@ -33,7 +33,7 @@ async def read_item(
     include_name: bool, 
     include_create_date: bool = True, 
     include_location: Optional[bool] = None, 
-    query: str = Query(None, min_length=3, max_length=8)
+    query: str = Query(None, min_length=3, max_length=8, title="query", description="Example query parameter.")
 ):
     return {
         "item_id": item_id,
