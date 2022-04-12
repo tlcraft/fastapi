@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 from fastapi import FastAPI, Path, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -13,11 +13,11 @@ async def root():
     return {"message": "Hello World"}
 
 class Item(BaseModel):
-    id: str
-    type: str
-    description: Optional[str] = None
-    price: float
-    tax: Optional[float] = None
+    id: str = Field(..., example="3")
+    type: str = Field(..., example="Foo")
+    description: Optional[str] = Field(None, example="A very nice Item")
+    price: float = Field(..., example=35.4)
+    tax: Optional[float] = Field(None, example=3.2)
     class Config:
         schema_extra = {
             "example": {
