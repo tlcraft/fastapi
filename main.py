@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -13,7 +13,7 @@ async def root():
     return {"message": "Hello World"}
 
 class Item(BaseModel):
-    id: str = Field(..., example="3")
+    id: str = Field(None, example="3")
     type: str = Field(..., example="Foo")
     description: Optional[str] = Field(None, example="A very nice Item")
     price: float = Field(..., example=35.4)
@@ -30,7 +30,16 @@ class Item(BaseModel):
         }
 
 @app.post("/item/")
-async def create_item(payload: Item):
+async def create_item(
+    payload: Item = Body(..., example={
+            "type": "Foo",
+            "description": "A very nice Item",
+            "price": 35.4,
+            "tax": 3.23,
+        },
+    )
+): 
+    payload.id = 1
     return payload
 
 @app.put("/items/{item_id}")
