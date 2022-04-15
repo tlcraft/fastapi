@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import Body, FastAPI, Path, Query, Request
+from fastapi import Body, FastAPI, Header, Path, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -44,8 +44,8 @@ async def create_item(
     return payload
 
 @app.put("/items/{item_id}")
-async def update_item(item_id: int, item: Item):
-    return {"item_id": item_id, **item.dict()}
+async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
+    return {"item_id": item_id, "header": x_token, **item.dict()}
 
 @app.get("/item/{item_id}")
 async def read_item(
