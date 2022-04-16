@@ -30,6 +30,10 @@ class Item(BaseModel):
             }
         }
 
+class ItemUpdateResponse(BaseModel):
+    id: str = Field(None, example="3")
+    header: str = Field(..., example="header")
+
 @app.post("/item/")
 async def create_item(
     payload: Item = Body(..., example={
@@ -43,7 +47,7 @@ async def create_item(
     payload.id = 1
     return payload
 
-@app.put("/items/{item_id}")
+@app.put("/items/{item_id}", response_model=ItemUpdateResponse)
 async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
     return {"item_id": item_id, "header": x_token, **item.dict()}
 
