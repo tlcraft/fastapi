@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import Body, FastAPI, Header, Path, Query, Request
+from fastapi import Body, FastAPI, Header, Path, Query, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -34,7 +34,7 @@ class ItemUpdateResponse(BaseModel):
     id: str = Field(None, example="3")
     header: str = Field(..., example="header")
 
-@app.post("/item/")
+@app.post("/item/", status_code=status.HTTP_201_CREATED)
 async def create_item(
     payload: Item = Body(..., example={
             "type": "Foo",
