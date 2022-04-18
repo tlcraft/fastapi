@@ -9,7 +9,7 @@ app = FastAPI()
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
 
-@app.get("/")
+@app.get("/", tags=["Root"])
 async def root():
     return {"message": "Hello World"}
 
@@ -34,7 +34,7 @@ class ItemUpdateResponse(BaseModel):
     id: str = Field(None, example="3")
     header: str = Field(..., example="header")
 
-@app.post("/item/", status_code=status.HTTP_201_CREATED)
+@app.post("/item/", status_code=status.HTTP_201_CREATED, tags=["items"])
 async def create_item(
     payload: Item = Body(..., example={
             "type": "Foo",
@@ -47,11 +47,11 @@ async def create_item(
     payload.id = 1
     return payload
 
-@app.put("/items/{item_id}", response_model=ItemUpdateResponse)
+@app.put("/items/{item_id}", response_model=ItemUpdateResponse, tags=["items"])
 async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
     return {"item_id": item_id, "header": x_token, **item.dict()}
 
-@app.get("/item/{item_id}")
+@app.get("/item/{item_id}", tags=["items"])
 async def read_item(
     include_name: bool, 
     item_id: int = Path(..., title="The ID of the item to get."), 
@@ -72,7 +72,7 @@ class ModelName(str, Enum):
     resnet = "resnet"
     lenet = "lenet"
 
-@app.get("/models/{model_name}")
+@app.get("/models/{model_name}", tags=["models"])
 async def get_model(model_name: ModelName):
     if model_name == ModelName.alexnet:
         return {"model_name": model_name, "message": "Deep Learning FTW!"}
