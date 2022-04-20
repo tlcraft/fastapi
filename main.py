@@ -43,7 +43,15 @@ async def create_item(
             "tax": 3.23,
         },
     )
-): 
+):
+    """
+    Create an item with all the information:
+
+    - **type**: each item must have a type
+    - **description**: a description of the item
+    - **price**: required
+    - **tax**: if the item doesn't have tax, you can omit this
+    """
     payload.id = 1
     return payload
 
