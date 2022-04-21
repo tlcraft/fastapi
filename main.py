@@ -91,6 +91,11 @@ async def get_model(model_name: ModelName):
     return {"model_name": model_name, "message": "Have some residuals"}
 
 
+@app.get("/models/id/{model_id}", tags=["models"], deprecated=True)
+async def get_model_by_id(model_id: int):
+    return {"model_id": model_id, "message": "Have some residuals"}
+
+
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, exc: Exception):
     return JSONResponse(
