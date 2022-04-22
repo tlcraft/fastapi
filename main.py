@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import Body, FastAPI, Header, Path, Query, Request, status
+from fastapi import Body, Depends, FastAPI, Header, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -98,6 +98,15 @@ async def get_model(model_name: ModelName):
 @app.get("/models/id/{model_id}", tags=["models"], deprecated=True)
 async def get_model_by_id(model_id: int):
     return {"model_id": model_id, "message": "Have some residuals"}
+
+
+async def common_parameters(q: Optional[str] = None, skip: int = 0, limit: int = 100):
+    return {"q": q, "skip": skip, "limit": limit}
+
+
+@app.get("/users/", tags=["users"])
+async def read_users(commons: dict = Depends(common_parameters)):
+    return commons
 
 
 @app.exception_handler(Exception)
