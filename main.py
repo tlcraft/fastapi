@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional
 from fastapi import Body, FastAPI, Header, Path, Query, Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -53,7 +54,10 @@ async def create_item(
     - **tax**: if the item doesn't have tax, you can omit this
     """
     payload.id = 1
-    return payload
+    json_encoded = jsonable_encoder(payload)
+    print("JSON Encoded: ", json_encoded)
+    print("ID: ", json_encoded["id"])
+    return json_encoded
 
 @app.put("/items/{item_id}", response_model=ItemUpdateResponse, tags=["items"])
 async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
