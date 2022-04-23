@@ -100,12 +100,19 @@ async def get_model_by_id(model_id: int):
     return {"model_id": model_id, "message": "Have some residuals"}
 
 
-async def common_parameters(q: Optional[str] = None, skip: int = 0, limit: int = 100):
-    return {"q": q, "skip": skip, "limit": limit}
+class CommonQueryParams:
+    def __init__(self, q: Optional[str] = None, skip: int = 0, limit: int = 100):
+        self.q = q
+        self.skip = skip
+        self.limit = limit
+
+
+# async def common_parameters(q: Optional[str] = None, skip: int = 0, limit: int = 100):
+#     return {"q": q, "skip": skip, "limit": limit}
 
 
 @app.get("/users/", tags=["users"])
-async def read_users(commons: dict = Depends(common_parameters)):
+async def read_users(commons: CommonQueryParams = Depends(CommonQueryParams)):
     return commons
 
 
