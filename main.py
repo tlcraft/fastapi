@@ -107,12 +107,12 @@ class CommonQueryParams:
         self.limit = limit
 
 
-# async def common_parameters(q: Optional[str] = None, skip: int = 0, limit: int = 100):
-#     return {"q": q, "skip": skip, "limit": limit}
+async def common_parameters(commons: CommonQueryParams = Depends(CommonQueryParams), include_all: bool = False):
+    return {**commons.__dict__, "include_all": include_all}
 
 
 @app.get("/users/", tags=["users"])
-async def read_users(commons: CommonQueryParams = Depends(CommonQueryParams)):
+async def read_users(commons:dict = Depends(common_parameters)):
     return commons
 
 
