@@ -5,7 +5,11 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI()
+async def verify_test_header(x_test_header: str = Header(...)):
+    if x_test_header != "X-Test-Header":
+        raise HTTPException(status_code=400, detail="X-Test-Header value invalid")
+
+app = FastAPI(dependencies=[Depends(verify_test_header)])
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
