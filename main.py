@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from fastapi import Body, Depends, FastAPI, Header, Path, Query, Request, status
+from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -114,6 +114,22 @@ async def common_parameters(commons: CommonQueryParams = Depends(CommonQueryPara
 @app.get("/users/", tags=["users"])
 async def read_users(commons:dict = Depends(common_parameters)):
     return commons
+
+
+async def verify_token(x_token: str = Header(...)):
+    if x_token != "fake-super-secret-token":
+        raise HTTPException(status_code=400, detail="X-Token header invalid")
+
+
+async def verify_key(x_key: str = Header(...)):
+    if x_key != "fake-super-secret-key":
+        raise HTTPException(status_code=400, detail="X-Key header invalid")
+    return x_key
+
+
+@app.get("/user/{user_id}", dependencies=[Depends(verify_token), Depends(verify_key)], tags=["users"])
+async def get_user(user_id):
+    return { "user_id": user_id }
 
 
 @app.exception_handler(Exception)
