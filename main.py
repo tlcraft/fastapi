@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 from typing import Optional
 from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
@@ -9,7 +10,18 @@ async def verify_test_header(x_test_header: str = Header(...)):
     if x_test_header != "X-Test-Header":
         raise HTTPException(status_code=400, detail="X-Test-Header value invalid")
 
-app = FastAPI(dependencies=[Depends(verify_test_header)])
+async def yield_dependency_example():
+    try:
+        start = time.perf_counter()
+        print("Start: ", start)
+        yield start
+    finally:
+        end = time.perf_counter()
+        print("End: ", end)
+        print(f"Completed the yield in {end - start:0.4f} seconds")
+
+
+app = FastAPI(dependencies=[Depends(verify_test_header), Depends(yield_dependency_example)])
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
