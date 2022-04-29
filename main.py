@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
 
 async def verify_test_header(x_test_header: str = Header(...)):
@@ -22,13 +23,14 @@ async def yield_dependency_example():
 
 
 app = FastAPI(dependencies=[Depends(verify_test_header), Depends(yield_dependency_example)])
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
 
 @app.get("/", tags=["Root"])
-async def root():
-    return {"message": "Hello World"}
+async def root(token: str = Depends(oauth2_scheme)):
+    return {"message": "Hello World", "token": token}
 
 class Item(BaseModel):
     id: str = Field(None, example="3")
