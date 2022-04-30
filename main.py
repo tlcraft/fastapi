@@ -6,6 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
+from user import User
 
 async def verify_test_header(x_test_header: str = Header(...)):
     if x_test_header != "X-Test-Header":
@@ -25,12 +26,22 @@ async def yield_dependency_example():
 app = FastAPI(dependencies=[Depends(verify_test_header), Depends(yield_dependency_example)])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+def fake_decode_token(token: str) -> User:
+    return User(
+        username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
+    )
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    user = fake_decode_token(token)
+    return user
+
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
 
 @app.get("/", tags=["Root"])
-async def root(token: str = Depends(oauth2_scheme)):
-    return {"message": "Hello World", "token": token}
+async def root(current_user: User = Depends(get_current_user)):
+    return {"message": "Hello World", "user": current_user}
 
 class Item(BaseModel):
     id: str = Field(None, example="3")
