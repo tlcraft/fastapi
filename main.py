@@ -5,12 +5,13 @@ from typing import Optional
 from database_mock import fake_users_db
 from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel, Field
-from user import User
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from pydantic import BaseModel, Field
+from user import User
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -34,6 +35,19 @@ async def yield_dependency_example():
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Token(BaseModel):
     access_token: str
