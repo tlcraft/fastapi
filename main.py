@@ -9,7 +9,9 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from models.token import Token
+from models.token_data import TokenData
 from models.user import User
+from models.user_db import UserDB
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -50,20 +52,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
-
-class User(BaseModel):
-    username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
-
-class UserInDB(User):
-    hashed_password: str
-
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -73,7 +61,7 @@ def get_password_hash(password):
 def get_db_user(db, username: str):
     if username in db:
         user_dict = db[username]
-        return UserInDB(**user_dict)
+        return UserDB(**user_dict)
 
 def authenticate_user(fake_db, username: str, password: str):
     user = get_db_user(fake_db, username)
