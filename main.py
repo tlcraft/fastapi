@@ -1,19 +1,20 @@
 import time
 from database_mock import fake_users_db
 from datetime import datetime, timedelta
-from enum import Enum
+from enums.model_name import ModelName
 from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
+from models.item import Item
+from models.item_update_response import ItemUpdateResponse
 from models.token import Token
 from models.token_data import TokenData
 from models.user import User
 from models.user_db import UserDB
 from passlib.context import CryptContext
-from pydantic import BaseModel, Field
 from typing import Optional
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -135,26 +136,6 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)):
 async def root():
     return {"message": "Hello World"}
 
-class Item(BaseModel):
-    id: str = Field(None, example="3")
-    type: str = Field(..., example="Foo")
-    description: Optional[str] = Field(None, example="A very nice Item")
-    price: float = Field(..., example=35.4)
-    tax: Optional[float] = Field(None, example=3.2)
-    class Config:
-        schema_extra = {
-            "example": {
-                "id": 3,
-                "type": "Foo",
-                "description": "A very nice Item",
-                "price": 35.4,
-                "tax": 3.2,
-            }
-        }
-
-class ItemUpdateResponse(BaseModel):
-    id: str = Field(None, example="3")
-    header: str = Field(..., example="header")
 
 @app.post("/item/", status_code=status.HTTP_201_CREATED, tags=["items"])
 async def create_item(
@@ -199,11 +180,6 @@ async def read_item(
         "include_location": include_location,
         "query": query  
     }
-
-class ModelName(str, Enum):
-    alexnet = "alexnet"
-    resnet = "resnet"
-    lenet = "lenet"
 
 @app.get("/models/{model_name}", tags=["models"])
 async def get_model(model_name: ModelName):
