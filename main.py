@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
+from models.common_query_params import CommonQueryParams
 from models.item import Item
 from models.item_update_response import ItemUpdateResponse
 from models.token import Token
@@ -195,13 +196,6 @@ async def get_model(model_name: ModelName):
 @app.get("/models/id/{model_id}", tags=["models"], deprecated=True)
 async def get_model_by_id(model_id: int):
     return {"model_id": model_id, "message": "Have some residuals"}
-
-
-class CommonQueryParams:
-    def __init__(self, q: Optional[str] = None, skip: int = 0, limit: int = 100):
-        self.q = q
-        self.skip = skip
-        self.limit = limit
 
 
 async def common_parameters(commons: CommonQueryParams = Depends(CommonQueryParams), include_all: bool = False):
