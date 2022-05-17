@@ -2,7 +2,7 @@ import time
 from database_mock import fake_users_db
 from datetime import datetime, timedelta
 from enums.model_name import ModelName
-from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
+from fastapi import BackgroundTasks, Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
