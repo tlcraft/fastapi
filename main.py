@@ -130,6 +130,16 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
+def write_notification(email: str, message=""):
+    with open("log.txt", mode="w") as email_file:
+        content = f"notification for {email}: {message}"
+        email_file.write(content)
+
+@app.post("/send-notification/{email}", tags=["notifications"])
+async def send_notification(email: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(write_notification, email, message="some notification")
+    return {"message": "Notification sent in the background"}
+
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
 
