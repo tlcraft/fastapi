@@ -2,7 +2,7 @@ import time
 from database_mock import fake_users_db
 from datetime import datetime, timedelta
 from enums.model_name import ModelName
-from fastapi import Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
+from fastapi import BackgroundTasks, Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -16,7 +16,7 @@ from models.token_data import TokenData
 from models.user import User
 from models.user_db import UserDB
 from passlib.context import CryptContext
-from typing import Optional
+from typing import Optional, Union
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -129,6 +129,24 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 @app.get("/users/me/items/", tags=["auth"])
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+def get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+@app.post("/send-notification/{email}", tags=["notifications"])
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
