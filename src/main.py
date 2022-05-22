@@ -1,21 +1,21 @@
 import time
-from database_mock import fake_users_db
 from datetime import datetime, timedelta
-from enums.model_name import ModelName
+from .data.database_mock import fake_users_db
+from .enums.model_name import ModelName
 from fastapi import BackgroundTasks, Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from models.common_query_params import CommonQueryParams
-from models.item import Item
-from models.item_update_response import ItemUpdateResponse
-from models.token import Token
-from models.token_data import TokenData
-from models.user import User
-from models.user_db import UserDB
+from .models.item import Item
+from .models.item_update_response import ItemUpdateResponse
+from .models.token import Token
+from .models.token_data import TokenData
+from .models.user import User
+from .models.user_db import UserDB
 from passlib.context import CryptContext
+from .routers import users
 from typing import Optional, Union
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -38,6 +38,7 @@ async def yield_dependency_example():
 
 
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
+app.include_router(users.router)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -214,31 +215,6 @@ async def get_model(model_name: ModelName):
 @app.get("/models/id/{model_id}", tags=["models"], deprecated=True)
 async def get_model_by_id(model_id: int):
     return {"model_id": model_id, "message": "Have some residuals"}
-
-
-async def common_parameters(commons: CommonQueryParams = Depends(CommonQueryParams), include_all: bool = False):
-    return {**commons.__dict__, "include_all": include_all}
-
-
-@app.get("/users/", tags=["users"])
-async def read_users(commons:dict = Depends(common_parameters)):
-    return commons
-
-
-async def verify_token(x_token: str = Header(...)):
-    if x_token != "fake-super-secret-token":
-        raise HTTPException(status_code=400, detail="X-Token header invalid")
-
-
-async def verify_key(x_key: str = Header(...)):
-    if x_key != "fake-super-secret-key":
-        raise HTTPException(status_code=400, detail="X-Key header invalid")
-    return x_key
-
-
-@app.get("/user/{user_id}", dependencies=[Depends(verify_token), Depends(verify_key)], tags=["users"])
-async def get_user(user_id):
-    return { "user_id": user_id }
 
 
 @app.exception_handler(Exception)
