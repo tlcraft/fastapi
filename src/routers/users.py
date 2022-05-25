@@ -1,8 +1,14 @@
+from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from src.data.database_mock import fake_users_db
+from src.dependencies.config import ALGORITHM, SECRET_KEY
+from src.dependencies.dependencies import common_parameters
+from src.models.token_data import TokenData
+from src.models.user import User
+from src.models.user_db import UserDB
 
-from fastapi import APIRouter, Depends, Header, HTTPException
-
-from ..dependencies.dependencies import common_parameters
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter(prefix="/users",
     tags=["users"],)
 
@@ -25,3 +31,40 @@ async def verify_key(x_key: str = Header(...)):
 @router.get("/{user_id}", dependencies=[Depends(verify_token), Depends(verify_key)])
 async def get_user(user_id):
     return { "user_id": user_id }
+
+def get_db_user(db, username: str):
+    if username in db:
+        user_dict = db[username]
+        return UserDB(**user_dict)
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = get_db_user(fake_users_db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+@router.get("/users/me/", response_model=User, tags=["auth"])
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    return current_user
+
+@router.get("/users/me/items/", tags=["auth"])
+async def read_own_items(current_user: User = Depends(get_current_active_user)):
+    return [{"item_id": "Foo", "owner": current_user.username}]
