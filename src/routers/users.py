@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from src.data.db_service import get_db_user
 from src.data.database_mock import fake_users_db
 from src.dependencies.config import ALGORITHM, SECRET_KEY
 from src.dependencies.dependencies import common_parameters
 from src.models.token_data import TokenData
 from src.models.user import User
-from src.models.user_db import UserDB
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter(prefix="/users",
@@ -32,10 +32,6 @@ async def verify_key(x_key: str = Header(...)):
 async def get_user(user_id):
     return { "user_id": user_id }
 
-def get_db_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserDB(**user_dict)
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
