@@ -1,5 +1,6 @@
 import time
 from datetime import datetime, timedelta
+from .data.db_service import get_db_user
 from .data.database_mock import fake_users_db
 from .enums.model_name import ModelName
 from fastapi import BackgroundTasks, Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
@@ -11,7 +12,6 @@ from jose import jwt
 from .models.item import Item
 from .models.item_update_response import ItemUpdateResponse
 from .models.token import Token
-from .models.user_db import UserDB
 from passlib.context import CryptContext
 from .routers import users
 from typing import Optional, Union
@@ -54,11 +54,6 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
-
-def get_db_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserDB(**user_dict)
 
 def authenticate_user(fake_db, username: str, password: str):
     user = get_db_user(fake_db, username)
