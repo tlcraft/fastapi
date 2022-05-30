@@ -3,17 +3,14 @@ from datetime import datetime, timedelta
 from .data.db_service import get_db_user
 from .data.database_mock import fake_users_db
 from .enums.model_name import ModelName
-from fastapi import BackgroundTasks, Body, Depends, FastAPI, Header, HTTPException, Path, Query, Request, status
-from fastapi.encoders import jsonable_encoder
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
-from .models.item import Item
-from .models.item_update_response import ItemUpdateResponse
 from .models.token import Token
 from passlib.context import CryptContext
-from .routers import users
+from .routers import users, items
 from typing import Optional, Union
 from .dependencies.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 
@@ -34,6 +31,7 @@ async def yield_dependency_example():
 
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
 app.include_router(users.router)
+app.include_router(items.router)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 origins = [
@@ -115,50 +113,6 @@ async def send_notification(
 async def root():
     return {"message": "Hello World"}
 
-
-@app.post("/item/", status_code=status.HTTP_201_CREATED, tags=["items"])
-async def create_item(
-    payload: Item = Body(..., example={
-            "type": "Foo",
-            "description": "A very nice Item",
-            "price": 35.4,
-            "tax": 3.23,
-        },
-    )
-):
-    """
-    Create an item with all the information:
-
-    - **type**: each item must have a type
-    - **description**: a description of the item
-    - **price**: required
-    - **tax**: if the item doesn't have tax, you can omit this
-    """
-    payload.id = 1
-    json_encoded = jsonable_encoder(payload)
-    print("JSON Encoded: ", json_encoded)
-    print("ID: ", json_encoded["id"])
-    return json_encoded
-
-@app.put("/items/{item_id}", response_model=ItemUpdateResponse, tags=["items"])
-async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
-    return {"item_id": item_id, "header": x_token, **item.dict()}
-
-@app.get("/item/{item_id}", tags=["items"])
-async def read_item(
-    include_name: bool, 
-    item_id: int = Path(..., title="The ID of the item to get."), 
-    include_create_date: bool = True, 
-    include_location: Optional[bool] = None, 
-    query: str = Query(None, min_length=3, max_length=8, title="query", description="Example query parameter.")
-):
-    return {
-        "item_id": item_id,
-        "include_name": include_name,
-        "include_create_date": include_create_date,
-        "include_location": include_location,
-        "query": query  
-    }
 
 @app.get("/models/{model_name}", tags=["models"])
 async def get_model(model_name: ModelName):
