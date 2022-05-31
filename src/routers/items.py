@@ -4,8 +4,7 @@ from src.models.item import Item
 from src.models.item_update_response import ItemUpdateResponse
 from typing import Optional
 
-router = APIRouter(prefix="/items",
-    tags=["items"],)
+router = APIRouter(prefix="/items", tags=["items"])
 
 @router.post("/item/", status_code=status.HTTP_201_CREATED)
 async def create_item(
