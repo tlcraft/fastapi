@@ -2,7 +2,6 @@ import time
 from datetime import datetime, timedelta
 from .data.db_service import get_db_user
 from .data.database_mock import fake_users_db
-from .enums.model_name import ModelName
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -10,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from .models.token import Token
 from passlib.context import CryptContext
-from .routers import users, items
+from .routers import items, models, users
 from typing import Optional, Union
 from .dependencies.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 
@@ -32,6 +31,7 @@ async def yield_dependency_example():
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
 app.include_router(users.router)
 app.include_router(items.router)
+app.include_router(models.router)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 origins = [
@@ -112,23 +112,6 @@ async def send_notification(
 @app.get("/", tags=["root"])
 async def root():
     return {"message": "Hello World"}
-
-
-@app.get("/models/{model_name}", tags=["models"])
-async def get_model(model_name: ModelName):
-    if model_name == ModelName.alexnet:
-        return {"model_name": model_name, "message": "Deep Learning FTW!"}
-
-    if model_name.value == "lenet":
-        return {"model_name": model_name, "message": "LeCNN all the images"}
-
-    return {"model_name": model_name, "message": "Have some residuals"}
-
-
-@app.get("/models/id/{model_id}", tags=["models"], deprecated=True)
-async def get_model_by_id(model_id: int):
-    return {"model_id": model_id, "message": "Have some residuals"}
-
 
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, exc: Exception):
