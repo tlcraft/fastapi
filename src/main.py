@@ -50,9 +50,6 @@ app.add_middleware(
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
 def authenticate_user(fake_db, username: str, password: str):
     user = get_db_user(fake_db, username)
     if not user:
