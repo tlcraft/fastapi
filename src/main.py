@@ -2,15 +2,15 @@ import time
 from datetime import datetime, timedelta
 from .data.db_service import get_db_user
 from .data.database_mock import fake_users_db
-from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from .models.token import Token
 from passlib.context import CryptContext
-from .routers import items, models, users
-from typing import Optional, Union
+from .routers import items, models, notifications, users
+from typing import Optional
 from .dependencies.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 
 async def verify_test_header(x_test_header: str = Header(...)):
@@ -32,6 +32,7 @@ app = FastAPI(dependencies=[Depends(yield_dependency_example)])
 app.include_router(users.router)
 app.include_router(items.router)
 app.include_router(models.router)
+app.include_router(notifications.router)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 origins = [
@@ -83,25 +84,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-def write_log(message: str):
-    with open("log.txt", mode="a") as log:
-        log.write(message)
-
-def get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):
-    if q:
-        message = f"found query: {q}\n"
-        background_tasks.add_task(write_log, message)
-    return q
-
-@app.post("/send-notification/{email}", tags=["notifications"])
-async def send_notification(
-    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)
-):
-    message = f"message to {email}\n"
-    background_tasks.add_task(write_log, message)
-    return {"message": "Message sent"}
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
