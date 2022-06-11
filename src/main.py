@@ -1,17 +1,8 @@
 import time
-from datetime import datetime, timedelta
-from .data.db_service import get_db_user
-from .data.database_mock import fake_users_db
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
-from .models.token import Token
-from passlib.context import CryptContext
-from .routers import items, models, notifications, users
-from typing import Optional
-from .dependencies.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
+from .routers import auth, items, models, notifications, users
 
 async def verify_test_header(x_test_header: str = Header(...)):
     if x_test_header != "X-Test-Header":
@@ -29,11 +20,11 @@ async def yield_dependency_example():
 
 
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
-app.include_router(users.router)
+app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(models.router)
 app.include_router(notifications.router)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+app.include_router(users.router)
 
 origins = [
     "http://localhost",
@@ -47,43 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_db_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-@app.post("/token", response_model=Token, tags=["auth"])
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
 
 # path operations are evaluated in the order they are defined
 # consider your routes and path parameters
