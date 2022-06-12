@@ -1,23 +1,9 @@
 import time
-from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from dependencies.dependencies import yield_dependency_example
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routers import auth, items, models, notifications, users
-
-async def verify_test_header(x_test_header: str = Header(...)):
-    if x_test_header != "X-Test-Header":
-        raise HTTPException(status_code=400, detail="X-Test-Header value invalid")
-
-async def yield_dependency_example():
-    try:
-        start = time.perf_counter()
-        print("Start: ", start)
-        yield start
-    finally:
-        end = time.perf_counter()
-        print("End: ", end)
-        print(f"Completed the yield in {end - start:0.4f} seconds")
-
 
 app = FastAPI(dependencies=[Depends(yield_dependency_example)])
 app.include_router(auth.router)
