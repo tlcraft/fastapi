@@ -5,7 +5,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from src.data.db_service import get_db_user
 from src.data.database_mock import fake_users_db
-from src.dependencies.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
+from config.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from src.models.token import Token
 from typing import Optional
 

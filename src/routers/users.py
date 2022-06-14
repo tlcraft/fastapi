@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from src.data.db_service import get_db_user
 from src.data.database_mock import fake_users_db
-from src.dependencies.config import ALGORITHM, SECRET_KEY
+from config.config import ALGORITHM, SECRET_KEY
 from src.dependencies.dependencies import common_parameters
 from src.models.token_data import TokenData
 from src.models.user import User
