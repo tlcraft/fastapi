@@ -1,5 +1,5 @@
 import time
-from dependencies.dependencies import yield_dependency_example
+from src.dependencies.dependencies import yield_dependency_example
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
