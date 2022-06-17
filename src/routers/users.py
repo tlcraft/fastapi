@@ -8,7 +8,7 @@ from src.dependencies.dependencies import common_parameters
 from src.models.token_data import TokenData
 from src.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 router = APIRouter(prefix="/users",
     tags=["users"],)
 
@@ -57,10 +57,10 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-@router.get("/users/me/", response_model=User, tags=["auth"])
+@router.get("/me/", response_model=User, tags=["auth"])
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@router.get("/users/me/items/", tags=["auth"])
+@router.get("/me/items/", tags=["auth"])
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
