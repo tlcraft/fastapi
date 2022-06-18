@@ -6,7 +6,7 @@ from typing import Optional
 
 router = APIRouter(prefix="/items", tags=["items"])
 
-@router.post("/item/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_item(
     payload: Item = Body(..., example={
             "type": "Foo",
@@ -30,11 +30,11 @@ async def create_item(
     print("ID: ", json_encoded["id"])
     return json_encoded
 
-@router.put("/items/{item_id}", response_model=ItemUpdateResponse)
+@router.put("/{item_id}", response_model=ItemUpdateResponse)
 async def update_item(item_id: int, item: Item, x_token: Optional[str] = Header(None)):
     return {"item_id": item_id, "header": x_token, **item.dict()}
 
-@router.get("/item/{item_id}")
+@router.get("/{item_id}")
 async def read_item(
     include_name: bool, 
     item_id: int = Path(..., title="The ID of the item to get."), 
