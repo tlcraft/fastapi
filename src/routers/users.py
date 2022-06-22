@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from src.data.db_service import get_db_user
 from src.data.database_mock import fake_users_db
 from src.config.config import ALGORITHM, SECRET_KEY
-from src.dependencies.dependencies import common_parameters
+from src.dependencies.dependencies import common_parameters, verify_key, verify_token
 from src.models.token_data import TokenData
 from src.models.user import User
 
@@ -15,17 +15,6 @@ router = APIRouter(prefix="/users",
 @router.get("/")
 async def read_users(commons:dict = Depends(common_parameters)):
     return commons
-
-
-async def verify_token(x_token: str = Header(...)):
-    if x_token != "fake-super-secret-token":
-        raise HTTPException(status_code=400, detail="X-Token header invalid")
-
-
-async def verify_key(x_key: str = Header(...)):
-    if x_key != "fake-super-secret-key":
-        raise HTTPException(status_code=400, detail="X-Key header invalid")
-    return x_key
 
 
 @router.get("/{user_id}", dependencies=[Depends(verify_token), Depends(verify_key)])
