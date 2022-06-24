@@ -1,11 +1,11 @@
 # fastapi tutorial
 
-[Source](https://fastapi.tiangolo.com/tutorial/)
+[Tutorial](https://fastapi.tiangolo.com/tutorial/)
 
 ## Commands
 
 ```
-python3 -m uvicorn main:app --reload
+python3 -m uvicorn src.main:app --reload
 ```
 
 ## Local Documentation
@@ -22,3 +22,9 @@ FastAPI is a class that inherits directly from Starlette. Starlette is a lightwe
 It is not encrypted, so, anyone could recover the information from the contents. See [https://jwt.io/](https://jwt.io/).
 
 But it's signed. So, when you receive a token that you emitted, you can verify that you actually emitted it.
+
+In our example John Doe's password is `secret`.
+
+## Project Structure
+
+[Common Project Structures](https://iq-inc.com/importerror-attempted-relative-import/#common-project-structures)
