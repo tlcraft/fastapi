@@ -5,7 +5,40 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routers import auth, items, models, notifications, users
 
-app = FastAPI(dependencies=[Depends(yield_dependency_example)])
+description = """
+OverviewApp API is an example API that helps demonstrate various aspects of FastAPI. 🚀
+
+## Items
+
+You can **read items**, **update items**, and **create items**.
+
+## Users
+
+You will be able to:
+
+* **Create users**
+* **Read users**
+* **Get their own information**
+* **Get their own items**
+"""
+
+app = FastAPI(    
+    title="OverviewApp",
+    description=description,
+    version="0.0.1",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "First Last",
+        "url": "http://www.example.com/contact/",
+        "email": "first.last@example.com",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+    dependencies=[Depends(yield_dependency_example)]
+)
+
 app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(models.router)
