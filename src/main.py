@@ -22,6 +22,25 @@ You will be able to:
 * **Get their own items**
 """
 
+tags_metadata = [
+    {
+        "name": "auth",
+        "description": "Login operations.",
+    },
+    {
+        "name": "users",
+        "description": "Operations with users.",
+    },
+    {
+        "name": "items",
+        "description": "Manage items.",
+        "externalDocs": {
+            "description": "Items external docs",
+            "url": "https://fastapi.tiangolo.com/",
+        },
+    },
+]
+
 app = FastAPI(    
     title="OverviewApp",
     description=description,
@@ -36,7 +55,8 @@ app = FastAPI(
         "name": "Apache 2.0",
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
     },
-    dependencies=[Depends(yield_dependency_example)]
+    dependencies=[Depends(yield_dependency_example)],
+    openapi_tags=tags_metadata
 )
 
 app.include_router(auth.router)
