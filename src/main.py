@@ -16,10 +16,10 @@ You can **read items**, **update items**, and **create items**.
 
 You will be able to:
 
-* **Create users**
+* **Read a user by id**
 * **Read users**
-* **Get their own information**
-* **Get their own items**
+* **Get the authenticated user's own information**
+* **Get the authenticated user's own items**
 """
 
 tags_metadata = [
