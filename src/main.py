@@ -25,19 +25,31 @@ You will be able to:
 tags_metadata = [
     {
         "name": "auth",
-        "description": "Login operations.",
-    },
-    {
-        "name": "users",
-        "description": "Operations with users.",
+        "description": "Operations for authentication.",
     },
     {
         "name": "items",
-        "description": "Manage items.",
+        "description": "Operations for items.",
         "externalDocs": {
             "description": "Items external docs",
             "url": "https://fastapi.tiangolo.com/",
         },
+    },
+    {
+        "name": "models",
+        "description": "Operations for models.",
+    },
+        {
+        "name": "notifications",
+        "description": "Operations for notifcations.",
+    },
+    {
+        "name": "root",
+        "description": "Operations at the root of the API.",
+    },
+    {
+        "name": "users",
+        "description": "Operations for users.",
     },
 ]
 
