@@ -8,9 +8,21 @@ from .routers import auth, items, models, notifications, users
 description = """
 OverviewApp API is an example API that helps demonstrate various aspects of FastAPI. 🚀
 
+## Auth
+
+You can login and retrieve an auth token.
+
 ## Items
 
 You can **read items**, **update items**, and **create items**.
+
+## Models
+
+You can get a model by name or get a model by id.
+
+## Notifications
+
+You can send a notification by email.
 
 ## Users
 
