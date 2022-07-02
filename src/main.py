@@ -24,6 +24,10 @@ You can get a model by name or get a model by id.
 
 You can send a notification by email.
 
+## Root
+
+You can retrieve a simple hello world object.
+
 ## Users
 
 You will be able to:
