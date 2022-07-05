@@ -86,6 +86,7 @@ app = FastAPI(
     dependencies=[Depends(yield_dependency_example)],
     openapi_tags=tags_metadata,
     openapi_url="/api/v1/openapi.json",
+    docs_url="/documentation",
     redoc_url=None
 )
 
