@@ -5,7 +5,91 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routers import auth, items, models, notifications, users
 
-app = FastAPI(dependencies=[Depends(yield_dependency_example)])
+description = """
+OverviewApp API is an example API that helps demonstrate various aspects of FastAPI. 🚀
+
+## Auth
+
+You can login and retrieve an auth token.
+
+## Items
+
+You can **read items**, **update items**, and **create items**.
+
+## Models
+
+You can get a model by name or get a model by id.
+
+## Notifications
+
+You can send a notification by email.
+
+## Root
+
+You can retrieve a simple hello world object.
+
+## Users
+
+You will be able to:
+
+* **Read a user by id**
+* **Read users**
+* **Get the authenticated user's own information**
+* **Get the authenticated user's own items**
+"""
+
+tags_metadata = [
+    {
+        "name": "auth",
+        "description": "Operations for authentication.",
+    },
+    {
+        "name": "items",
+        "description": "Operations for items.",
+        "externalDocs": {
+            "description": "Items external docs",
+            "url": "https://fastapi.tiangolo.com/",
+        },
+    },
+    {
+        "name": "models",
+        "description": "Operations for models.",
+    },
+        {
+        "name": "notifications",
+        "description": "Operations for notifcations.",
+    },
+    {
+        "name": "root",
+        "description": "Operations at the root of the API.",
+    },
+    {
+        "name": "users",
+        "description": "Operations for users.",
+    },
+]
+
+app = FastAPI(    
+    title="OverviewApp",
+    description=description,
+    version="0.0.1",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "First Last",
+        "url": "http://www.example.com/contact/",
+        "email": "first.last@example.com",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+    dependencies=[Depends(yield_dependency_example)],
+    openapi_tags=tags_metadata,
+    openapi_url="/api/v1/openapi.json",
+    docs_url="/documentation",
+    redoc_url=None
+)
+
 app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(models.router)

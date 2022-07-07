@@ -10,8 +10,12 @@ python3 -m uvicorn src.main:app --reload
 
 ## Local Documentation
 
-- http://127.0.0.1:8000/docs
-- http://127.0.0.1:8000/redoc
+- http://127.0.0.1:8000/documentation
+- http://127.0.0.1:8000/redoc (Not enabled)
+
+## API URL
+
+- /api/v1/openapi.json
 
 ## Notes
 
