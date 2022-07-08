@@ -13,7 +13,7 @@ router = APIRouter(prefix="/users",
     tags=["users"],)
 
 @router.get("/")
-async def read_users(commons:dict = Depends(common_parameters)):
+async def read_users(commons: dict = Depends(common_parameters)):
     return commons
 
 
