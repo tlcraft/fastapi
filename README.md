@@ -32,3 +32,13 @@ In our example John Doe's password is `secret`.
 ## Project Structure
 
 [Common Project Structures](https://iq-inc.com/importerror-attempted-relative-import/#common-project-structures)
+
+## Unit Testing
+
+- Run tests: python3 -m pytest -v -s
+
+Dependencies:
+
+- pip3 install -U pytest
+- pip3 install -U requests
+- pip3 install -U pytest-mock
