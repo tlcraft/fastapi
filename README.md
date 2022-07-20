@@ -1,6 +1,7 @@
 # fastapi tutorial
 
-[Tutorial](https://fastapi.tiangolo.com/tutorial/)
+[Tutorial](https://fastapi.tiangolo.com/tutorial/)  
+[Advanced Tutorial](https://fastapi.tiangolo.com/advanced/)
 
 ## Commands
 
