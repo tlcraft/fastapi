@@ -1,4 +1,6 @@
-# fastapi tutorial
+# FastAPI Tutorial
+
+In this repo I worked through the FastAPI tutorial to learn more about the framework. There is also an advanced tutorial with more information available.
 
 [Tutorial](https://fastapi.tiangolo.com/tutorial/)  
 [Advanced Tutorial](https://fastapi.tiangolo.com/advanced/)
@@ -40,10 +42,10 @@ In our example John Doe's password is `secret`.
 
 ## Unit Testing
 
-- Run tests: python3 -m pytest -v -s
+- Run tests: ```python3 -m pytest -v -s```
 
 Dependencies:
 
-- pip3 install -U pytest
-- pip3 install -U requests
-- pip3 install -U pytest-mock
+- `pip3 install -U pytest`
+- `pip3 install -U requests`
+- `pip3 install -U pytest-mock`
