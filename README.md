@@ -13,6 +13,14 @@ To start the app run:
 python3 -m uvicorn src.main:app --reload
 ```
 
+### Unit Testing
+
+To run the unit tests run: 
+
+```
+python3 -m pytest -v -s
+```
+
 ## Local Documentation
 
 - http://127.0.0.1:8000/documentation
@@ -40,11 +48,8 @@ In our example John Doe's password is `secret`.
 
 [Common Project Structures](https://iq-inc.com/importerror-attempted-relative-import/#common-project-structures)
 
-## Unit Testing
 
-- Run tests: ```python3 -m pytest -v -s```
-
-Dependencies:
+## Dependencies
 
 - `pip3 install -U pytest`
 - `pip3 install -U requests`
