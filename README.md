@@ -7,7 +7,9 @@ In this repo I worked through the FastAPI tutorial to learn more about the frame
 
 ## General Commands
 
-To start the app run:
+There is a Makefile with the following commands for convenience.
+
+To start the app you can run:
 
 ```
 python3 -m uvicorn src.main:app --reload
@@ -15,7 +17,7 @@ python3 -m uvicorn src.main:app --reload
 
 ### Unit Testing
 
-To run the unit tests run: 
+To run the unit tests you can run: 
 
 ```
 python3 -m pytest -v -s
