@@ -53,6 +53,8 @@ In our example John Doe's password is `secret`.
 
 ## Dependencies
 
+Install with `pip3 install -r requirements.txt`
+
 - `pip3 install -U pytest`
 - `pip3 install -U requests`
 - `pip3 install -U pytest-mock`
