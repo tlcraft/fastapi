@@ -23,6 +23,14 @@ To run the unit tests you can run:
 python3 -m pytest -v -s
 ```
 
+### Dependencies
+
+Install with `pip3 install -r requirements.txt`
+
+- `pip3 install -U pytest`
+- `pip3 install -U requests`
+- `pip3 install -U pytest-mock`
+
 ## Local Documentation
 
 - http://127.0.0.1:8000/documentation
@@ -49,12 +57,3 @@ In our example John Doe's password is `secret`.
 ## Project Structure
 
 [Common Project Structures](https://iq-inc.com/importerror-attempted-relative-import/#common-project-structures)
-
-
-## Dependencies
-
-Install with `pip3 install -r requirements.txt`
-
-- `pip3 install -U pytest`
-- `pip3 install -U requests`
-- `pip3 install -U pytest-mock`
