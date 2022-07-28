@@ -25,7 +25,11 @@ python3 -m pytest -v -s
 
 ### Dependencies
 
-Install with `pip3 install -r requirements.txt`
+To install the dependencies you can run:
+
+```
+pip3 install -r requirements.txt
+```
 
 - `pip3 install -U pytest`
 - `pip3 install -U requests`
